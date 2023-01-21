@@ -17,68 +17,85 @@
     x-init="getPrograms()"
   >
     <div x-show="isLoading" class="fixed h-screen  w-full">
-      <div class="flex flex-row items-center justify-center h-full w-full bg-gray-700">
-        <div class="load border-solid border-8 border-blue-400"></div>
+      <div class="flex flex-row items-center justify-center h-full w-full bg-gray-100">
+        <div class="load border-solid border-8 border-black"></div>
       </div>
     </div>
 
     <div x-show="!isLoading" class="">
-      <div class="fixed bg-gray-700 top-0 w-full h-28">
-        <!--  -->
-        <div class="flex flex-wrap items-center justify-between h-full px-4 lg:px-12">
-          <h1 class="text-blue-400 text-4xl block  w-full lg:w-1/2">Argonauta</h1>
+      <div class="fixed bg-gray-300 top-0 w-full flex flex-col justify-between p-6 space-y-10">
+        <div class="flex flex-row justify-start items-center space-x-10">
+          <button 
+            class='button'
+            :class="isPlaying ? 'paused' : ''"
+            x-on:click="isPlaying ? pauseProgram() : playProgram()">
+          </button>
 
           <template x-if="selectedProgram">
-            <div class="text-gray-500 text-2xl lg:text-right w-full lg:w-1/2">
-              <span x-text="selectedProgram.title"></span>
+            <div class="text-black lg:text-4xl text-2xl">
+              <h1 x-text="selectedProgram.title"></h1>
             </div>
           </template>
         </div>
-          
+
+        <!-- Audio element -->
+        <div class="overflow-x-hidden">
+          <div class="-ml-10" style="background-color: #f1f3f4;">
+            <div class="w-full">
+              <audio
+                id="audio-player" 
+                class="w-full"
+                controls
+                x-on:playing="onPlayingHandler"
+                x-on:pause="onPauseHandler"
+              >
+                <source id="audio-source" type="audio/mp3">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Audio element -->
-      <div x-show="selectedProgram" class="sticky top-28">
-          <audio id="audio-player" class="w-full" controls>
-            <source id="audio-source" type="audio/mp3">
-            Your browser does not support the audio element.
-          </audio>
-      </div>
 
       <!-- Program List -->
-      <ul class="w-full flex-col items-center space-y-10 mt-32 lg:px-10 px-2">
+      <ul class="w-full flex flex-col items-center space-y-10 mt-56 lg:px-10 px-2">
         <template x-for="program in programs" :key="program.id">
-          <li class="rounded-2xl bg-gray-200 p-6 space-y-4 flex flex-wrap">
-            <!-- Title -->
-            <div class="w-full">
-              <h2 class="text-blue-400 text-3xl" x-text="program.title"></h2>
-            </div>
-            
-            <!-- Cover & Tracks -->
-            <div class="w-full lg:w-3/12 h-full">
+          <li class="rounded-2xl bg-gray-200 p-6 w-full lg:w-8/12 flex flex-wrap shadow-xl">
+
+            <!-- Cover -->
+            <div class="w-full lg:w-1/2 h-full space-y-4 pb-4">
               <img
                 class="object-cover w-full h-full rounded-xl"
                 :src="program.cover"
                 :alt="program.id"
                 x-on:click="playProgram(program)"
               />
+              <div class="text-gray-500" x-text="program.coverSource"></div>
             </div>
 
-            <!-- Description -->
-            <div class="w-full lg:order-last">
-              <div class="text-justify" x-text="program.description"></div>
-            </div>
+            <div class="w-full lg:w-1/2 h-full space-y-4 lg:pl-5">
+              <!-- Title -->
+              <div class="w-full">
+                <h2 class="text-black text-3xl" x-text="program.title"></h2>
+              </div>
 
-            <div class="lg:px-5 py-2 lg:w-2/3 w-full">
-              <h3 class="text-blue-400 text-3xl">Faixas</h3>
-              <div class="flex flex-wrap space-y-1">
-                <template x-for="(track, index) in program.trackList" :key="track">
-                  <div class="w-full lg:w-6/12 pr-2" x-text="`${index + 1} - ${track}`"></div>
-                </template>
+              <!-- Description -->
+              <div class="w-full lg:order-last">
+                <div class="text-justify" x-text="program.description"></div>
+              </div>
+
+              <!-- Tracks -->
+              <div class="py-2 w-full">
+                <h3 class="text-black text-3xl">Faixas</h3>
+                <div class="space-y-1">
+                  <template x-for="(track, index) in program.trackList" :key="track">
+                    <div class="w-full" x-text="`${index + 1} - ${track}`"></div>
+                  </template>
+                </div>
               </div>
             </div>
-            
-
           </li>
         </template>
       </ul>
@@ -88,10 +105,12 @@
   </div>
 </body>
 <script>
+  
   const alpineData = {
     isLoading: true,
     programs: [],
     selectedProgram: null,
+    isPlaying: false,
 
     // Methods
     async getPrograms() {
@@ -100,24 +119,48 @@
         .then((json) => {
           this.programs = json.programs;
           this.isLoading = false;
-          console.log("programs : ", this.programs);
+          // console.log("programs : ", this.programs);
+
+          // Select random program
+          const randomIndex = Math.floor(Math.random() * this.programs.length)
+          this.loadProgram(this.programs[randomIndex])
         });
     },
-    playProgram(program) {
-      console.log("Playing program: ", program)
+    loadProgram(program) {
       this.selectedProgram = {...program}
-
 
       const audioSource = document.getElementById("audio-source")
       audioSource.src = program.mp3
 
       const audioPlayer = document.getElementById("audio-player")
       audioPlayer.load()
+    },
+    playProgram(program) {
+      // console.log("Playing program: ", program)
+
+      const audioPlayer = document.getElementById("audio-player")
+
+      if (program) {
+        this.loadProgram(program)
+      }
+
       audioPlayer.play()
+    },
+    pauseProgram() {
+      const audioPlayer = document.getElementById("audio-player")
+      audioPlayer.pause()
+    },
+    onPlayingHandler(event) {
+      // console.log(event)
+      this.isPlaying = true
+    },
+    onPauseHandler(event) {
+      // console.log(event)
+      this.isPlaying = false
     }
   }
 </script>
-<style>
+<style lang="scss">
   [x-cloak] {
     display: none !important;
   }
@@ -159,6 +202,27 @@
       animation-duration:         1.0s; 
       animation-iteration-count:  infinite;
       animation-timing-function: linear; 
+  }
+
+  /* Play/pause button */
+  .button {
+    border: 0;
+    background: transparent;
+    box-sizing: border-box;
+    width: 0;
+    height: 54px;
+    border-color: transparent transparent transparent #202020;
+    transition: 100ms all ease;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 27px 0 27px 40px;
+  }
+  .button.paused {
+    border-style: double;
+    border-width: 0px 0 0px 60px;
+  }
+  .button:hover {
+    border-color: transparent transparent transparent #404040;
   }
 </style>
 </html>
