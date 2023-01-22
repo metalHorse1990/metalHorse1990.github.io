@@ -16,26 +16,41 @@
     x-data="alpineData"
     x-init="getPrograms()"
   >
+    <!-- Loading window -->
     <div x-show="isLoading" class="fixed h-screen  w-full">
       <div class="flex flex-row items-center justify-center h-full w-full bg-gray-100">
         <div class="load border-solid border-8 border-black"></div>
       </div>
     </div>
 
-    <div x-show="!isLoading" class="">
+    <!-- Player page -->
+    <div x-show="!isLoading" class="" @scroll.window.throttle="onScrollHandler">
+      <!-- Top bar -->
       <div class="fixed bg-gray-300 top-0 w-full flex flex-col justify-between p-6 space-y-10">
-        <div class="flex flex-row justify-start items-center space-x-10">
-          <button 
-            class='button'
-            :class="isPlaying ? 'paused' : ''"
-            x-on:click="isPlaying ? pauseProgram() : playProgram()">
-          </button>
+        <!-- Program title -->
+        <div class="flex flex-row justify-between items-center space-x-10 lg:text-3xl text-xl h-10">
+
+          <div class="cursor-pointer w-6 lg:w-8" x-on:click="isPlaying ? pauseProgram() : playProgram()">
+            <svg x-show="!isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+            </svg>
+            <svg x-show="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+              <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/>
+            </svg>
+          </div>
 
           <template x-if="selectedProgram">
-            <div class="text-black lg:text-4xl text-2xl">
+            <div class="text-black">
               <h1 x-text="selectedProgram.title"></h1>
             </div>
           </template>
+
+          <!-- Shuffle button -->
+          <div class="w-6 lg:w-8">
+            <svg class="cursor-pointer" x-on:click="playRandomProgram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V160H352c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V416H352c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8h32V320c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/>
+            </svg>
+          </div>
         </div>
 
         <!-- Audio element -->
@@ -55,19 +70,18 @@
             </div>
           </div>
         </div>
-
       </div>
 
 
       <!-- Program List -->
-      <ul class="w-full flex flex-col items-center space-y-10 mt-56 lg:px-10 px-2">
+      <ul id="program-list" class="w-full flex flex-col items-center space-y-10 mt-56 lg:px-10 px-2 pb-20">
         <template x-for="program in programs" :key="program.id">
           <li class="rounded-2xl bg-gray-200 p-6 w-full lg:w-8/12 flex flex-wrap shadow-xl">
 
             <!-- Cover -->
             <div class="w-full lg:w-1/2 h-full space-y-4 pb-4">
               <img
-                class="object-cover w-full h-full rounded-xl"
+                class="cursor-pointer object-cover w-full h-full rounded-xl"
                 :src="program.cover"
                 :alt="program.id"
                 x-on:click="playProgram(program)"
@@ -99,9 +113,19 @@
           </li>
         </template>
       </ul>
+
+      <!-- Scroll button -->
+      <div x-on:click="jumpButtonHandler" class="cursor-pointer w-16 h-16 fixed bottom-0 right-0 bg-gray-400 rounded-full mr-5 mb-5 flex items-center justify-center" x-on-click="">
+        <div class="w-8 h-8">
+          <svg x-show="scrollToTop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+          </svg>
+          <svg x-show="!scrollToTop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+          </svg>
+        </div>
+      </div>
     </div>
-
-
   </div>
 </body>
 <script>
@@ -111,6 +135,8 @@
     programs: [],
     selectedProgram: null,
     isPlaying: false,
+    scrollToTop: true,
+    lastScrollY: 0,
 
     // Methods
     async getPrograms() {
@@ -118,12 +144,13 @@
         .then((response) => response.json())
         .then((json) => {
           this.programs = json.programs;
-          this.isLoading = false;
           // console.log("programs : ", this.programs);
 
           // Select random program
           const randomIndex = Math.floor(Math.random() * this.programs.length)
           this.loadProgram(this.programs[randomIndex])
+
+          this.isLoading = false;
         });
     },
     loadProgram(program) {
@@ -146,6 +173,10 @@
 
       audioPlayer.play()
     },
+    playRandomProgram() {
+      const randomIndex = Math.floor(Math.random() * this.programs.length)
+      this.playProgram(this.programs[randomIndex])
+    },
     pauseProgram() {
       const audioPlayer = document.getElementById("audio-player")
       audioPlayer.pause()
@@ -157,7 +188,21 @@
     onPauseHandler(event) {
       // console.log(event)
       this.isPlaying = false
-    }
+    },
+    onScrollHandler(event) {
+      const scrollY = window.scrollY
+
+      this.scrollToTop = (scrollY < this.lastScrollY)
+
+      this.lastScrollY = scrollY
+    },
+    jumpButtonHandler() {
+      if (this.scrollToTop) {
+        window.scrollTo(0,0)
+      } else {
+        window.scrollTo(0, document.body.scrollHeight)
+      }
+    },
   }
 </script>
 <style lang="scss">
@@ -202,27 +247,6 @@
       animation-duration:         1.0s; 
       animation-iteration-count:  infinite;
       animation-timing-function: linear; 
-  }
-
-  /* Play/pause button */
-  .button {
-    border: 0;
-    background: transparent;
-    box-sizing: border-box;
-    width: 0;
-    height: 54px;
-    border-color: transparent transparent transparent #202020;
-    transition: 100ms all ease;
-    cursor: pointer;
-    border-style: solid;
-    border-width: 27px 0 27px 40px;
-  }
-  .button.paused {
-    border-style: double;
-    border-width: 0px 0 0px 60px;
-  }
-  .button:hover {
-    border-color: transparent transparent transparent #404040;
   }
 </style>
 </html>
