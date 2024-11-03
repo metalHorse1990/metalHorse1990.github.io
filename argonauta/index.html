@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- styles -->
-    <link rel="stylesheet" href="./styles.css">
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Alpine -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- styles -->
+  <link rel="stylesheet" href="./styles.css">
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
 
-    <title>Argonauta</title>
+  <!-- Alpine -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <title>Argonauta</title>
 </head>
+
 <body class="bg-gray-100">
-  
-  <div
-    x-cloak
-    x-transition
-    x-data="alpineData"
-    x-init="getPrograms()"
-  >
+
+  <div x-cloak x-transition x-data="alpineData" x-init="getPrograms()">
     <!-- Loading window -->
     <div x-show="isLoading" class="fixed h-screen  w-full">
       <div class="flex flex-row items-center justify-center h-full w-full bg-gray-100">
@@ -38,10 +35,12 @@
 
           <div class="cursor-pointer w-6 lg:w-8" x-on:click="isPlaying ? pauseProgram() : playProgram()">
             <svg x-show="!isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/>
+              <path
+                d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" />
             </svg>
             <svg x-show="isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
-              <path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/>
+              <path
+                d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z" />
             </svg>
           </div>
 
@@ -53,8 +52,10 @@
 
           <!-- Shuffle button -->
           <div class="w-6 lg:w-8">
-            <svg class="cursor-pointer" x-on:click="playRandomProgram" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V160H352c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V416H352c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8h32V320c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/>
+            <svg class="cursor-pointer" x-on:click="playRandomProgram" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512">
+              <path
+                d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V160H352c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V416H352c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8h32V320c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z" />
             </svg>
           </div>
         </div>
@@ -63,13 +64,8 @@
         <div class="overflow-x-hidden">
           <div class="-ml-10" style="background-color: #f1f3f4;">
             <div class="w-full">
-              <audio
-                id="audio-player" 
-                class="w-full"
-                controls
-                x-on:playing="onPlayingHandler"
-                x-on:pause="onPauseHandler"
-              >
+              <audio id="audio-player" class="w-full" controls x-on:playing="onPlayingHandler"
+                x-on:pause="onPauseHandler">
                 <source id="audio-source" type="audio/mp3">
                 Your browser does not support the audio element.
               </audio>
@@ -86,13 +82,8 @@
 
             <!-- Cover -->
             <div class="w-full lg:w-1/2 h-full space-y-4 pb-4">
-              <img
-                class="cursor-pointer object-cover w-full h-full rounded-xl"
-                :src="program.cover"
-                :alt="program.id"
-                x-on:click="playProgram(program)"
-                loading="lazy"
-              />
+              <img class="cursor-pointer object-cover w-full h-full rounded-xl" :src="program.cover" :alt="program.id"
+                x-on:click="playProgram(program)" loading="lazy" />
               <div class="text-gray-500" x-text="program.coverSource"></div>
             </div>
 
@@ -108,7 +99,7 @@
               </div>
 
               <!-- Tracks -->
-              <div class="py-2 w-full">
+              <div x-show="program.trackList.length > 0" class="py-2 w-full">
                 <h3 class="text-black text-3xl">Faixas</h3>
                 <div class="space-y-1">
                   <template x-for="(track, index) in program.trackList" :key="track">
@@ -122,13 +113,17 @@
       </ul>
 
       <!-- Scroll button -->
-      <div x-on:click="jumpButtonHandler" class="cursor-pointer w-16 h-16 fixed bottom-0 right-0 bg-gray-400 rounded-full mr-5 mb-5 flex items-center justify-center" x-on-click="">
+      <div x-on:click="jumpButtonHandler"
+        class="cursor-pointer w-16 h-16 fixed bottom-0 right-0 bg-gray-400 rounded-full mr-5 mb-5 flex items-center justify-center"
+        x-on-click="">
         <div class="w-8 h-8">
           <svg x-show="scrollToTop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/>
+            <path
+              d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z" />
           </svg>
           <svg x-show="!scrollToTop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-            <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/>
+            <path
+              d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
           </svg>
         </div>
       </div>
@@ -136,7 +131,7 @@
   </div>
 </body>
 <script>
-  
+
   const alpineData = {
     isLoading: true,
     programs: [],
@@ -147,7 +142,7 @@
 
     // Methods
     async getPrograms() {
-      await fetch('https://metalhorse1990.github.io/argonauta/programs.json')
+      await fetch('https://res.cloudinary.com/dq0wkhgai/raw/upload/v1730594472/Argonauta/programs.json')
         .then((response) => response.json())
         .then((json) => {
           this.programs = json.programs;
@@ -161,7 +156,7 @@
         });
     },
     loadProgram(program) {
-      this.selectedProgram = {...program}
+      this.selectedProgram = { ...program }
 
       const audioSource = document.getElementById("audio-source")
       audioSource.src = program.mp3
@@ -205,7 +200,7 @@
     },
     jumpButtonHandler() {
       if (this.scrollToTop) {
-        window.scrollTo(0,0)
+        window.scrollTo(0, 0)
       } else {
         window.scrollTo(0, document.body.scrollHeight)
       }
@@ -219,21 +214,23 @@
 
   @keyframes rotate {
     from {
-        transform: rotate(0deg);
+      transform: rotate(0deg);
     }
-    to { 
-        transform: rotate(360deg);
+
+    to {
+      transform: rotate(360deg);
     }
   }
-  
+
 
   @-webkit-keyframes rotate {
-      from {
-          -webkit-transform: rotate(0deg);
-      }
-      to { 
-          -webkit-transform: rotate(360deg);
-      }
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+
+    to {
+      -webkit-transform: rotate(360deg);
+    }
   }
 
   .load {
@@ -244,16 +241,17 @@
     border-right-color: transparent;
     border-bottom-color: transparent;
     -webkit-transition: all 0.5s ease-in;
-      -webkit-animation-name:             rotate; 
-      -webkit-animation-duration:         1.0s; 
-      -webkit-animation-iteration-count:  infinite;
-      -webkit-animation-timing-function: linear;
-        
-        transition: all 0.5s ease-in;
-      animation-name:             rotate; 
-      animation-duration:         1.0s; 
-      animation-iteration-count:  infinite;
-      animation-timing-function: linear; 
+    -webkit-animation-name: rotate;
+    -webkit-animation-duration: 1.0s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+
+    transition: all 0.5s ease-in;
+    animation-name: rotate;
+    animation-duration: 1.0s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
   }
 </style>
+
 </html>
